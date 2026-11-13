@@ -1,0 +1,7 @@
+﻿target/
+.idea/
+.vscode/
+*.iml
+
+# Dados locais de conexão com o banco
+src/main/resources/database/db.properties
