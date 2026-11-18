@@ -1,46 +1,24 @@
+
 package br.com.cora;
 
-import br.com.cora.dao.AgendamentoDAO;
-import br.com.cora.model.Agendamento;
+import java.sql.Connection;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import br.com.cora.database.Conexao;
 
 public class App {
 
     public static void main(String[] args) {
 
-        try {
-            AgendamentoDAO dao = new AgendamentoDAO();
+        try (Connection conexao = Conexao.conectar()) {
 
-            Agendamento agendamento = new Agendamento(
-                null,
-                LocalDate.of(2026, 11, 20),
-                LocalTime.of(14, 30),
-                "Sessao de teste",
-                "PENDENTE",
-                1,
-                1
-            );
-
-            dao.inserir(agendamento);
-
-            System.out.println("Agendamento cadastrado com sucesso!");
-
-            System.out.println("\nAgendamentos cadastrados:");
-
-            for (Agendamento a : dao.listarTodos()) {
+            if (conexao.isValid(5)) {
                 System.out.println(
-                    a.getIdAgendamento() + " - " +
-                    a.getData() + " - " +
-                    a.getHorario() + " - " +
-                    a.getDescricao() + " - " +
-                    a.getStatus()
+                    "Conexao com PostgreSQL realizada com sucesso!"
                 );
             }
 
         } catch (Exception e) {
-            System.out.println("Erro ao executar o teste:");
+            System.out.println("Erro na conexao:");
             e.printStackTrace();
         }
     }

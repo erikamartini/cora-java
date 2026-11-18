@@ -1,8 +1,5 @@
 package br.com.cora.dao;
 
-import br.com.cora.database.Conexao;
-import br.com.cora.model.Cliente;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import br.com.cora.database.Conexao;
+import br.com.cora.model.Cliente;
 
 public class ClienteDAO {
 
@@ -34,7 +34,9 @@ public class ClienteDAO {
 
     public List<Cliente> listarTodos() throws SQLException, IOException {
 
-        String sql = "SELECT * FROM cliente";
+        String sql = "SELECT id_cliente, nome, telefone, email, "
+           + "observacoes, id_usuario "
+           + "FROM cliente ORDER BY id_cliente";
 
         List<Cliente> clientes = new ArrayList<>();
 
@@ -59,4 +61,42 @@ public class ClienteDAO {
 
         return clientes;
     }
+
+public boolean atualizar(Cliente cliente) throws SQLException, IOException {
+
+    String sql = "UPDATE cliente "
+               + "SET nome = ?, telefone = ?, email = ?, "
+               + "observacoes = ?, id_usuario = ? "
+               + "WHERE id_cliente = ?";
+
+    try (Connection conexao = Conexao.conectar();
+         PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+        stmt.setString(1, cliente.getNome());
+        stmt.setString(2, cliente.getTelefone());
+        stmt.setString(3, cliente.getEmail());
+        stmt.setString(4, cliente.getObservacoes());
+        stmt.setInt(5, cliente.getIdUsuario());
+        stmt.setInt(6, cliente.getIdCliente());
+
+        return stmt.executeUpdate() > 0;
+    }
+}
+
+public boolean excluir(int idCliente) throws SQLException, IOException {
+
+    String sql = "DELETE FROM cliente WHERE id_cliente = ?";
+
+    try (Connection conexao = Conexao.conectar();
+         PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+        stmt.setInt(1, idCliente);
+
+        return stmt.executeUpdate() > 0;
+    }
+}
+
+
+
+
 }
